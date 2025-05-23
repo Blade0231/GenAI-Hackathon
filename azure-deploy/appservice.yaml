@@ -1,0 +1,13 @@
+version: 1.0
+services:
+  app:
+    image: image-name:latest
+    environment:
+      - name: PORT
+        value: 8000
+    resources:
+      cpu: 1
+      memory: 1Gi
+    bindings:
+      - port: 8000
+        protocol: http
