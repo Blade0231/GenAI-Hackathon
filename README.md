@@ -30,12 +30,19 @@ Built using:
 TODO: Update Requirements for Environment Creation and build a demo structure
 
 ```bash
-cd backend
-python -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
+conda create --name genai python==3.12
+conda activate genai
+
+conda install pip
+pip install -r backend/requirements.txt
 uvicorn app:app --reload
 ```
 
-## 🧪 Agents
+## 🧠 Agents
 
-TODO
+TODO:
+
+1. Finalize and Build Agents.
+2. Build FastAPI
+3. Backend
+4. Tabnet ?

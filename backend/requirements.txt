@@ -1,4 +1,10 @@
 # Add your Python dependencies here
 fastapi
 uvicorn
-crewai
+crewai==0.121.0
+crewai-tools==0.45.0
+langchain==0.3.25
+langchain-community==0.3.24
+PyPDF2==3.0.1
+
+

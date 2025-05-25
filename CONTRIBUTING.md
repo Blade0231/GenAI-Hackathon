@@ -8,9 +8,10 @@ Thanks for your interest in contributing! Here's how you can help:
 ## 📦 Setup
 
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+conda create --name genai python==3.12
+conda activate genai
+
+conda install pip
+pip install -r backend/requirements.txt
 ```
 ````
