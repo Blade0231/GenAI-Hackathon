@@ -1,0 +1,43 @@
+<div class="video-container">
+  <video [muted]="'muted'" #bgVideo autoplay loop playsinline>
+    <source [attr.src]="videoPath" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<button class="top-right" (click)="togglePrompt()">Start</button>
+
+<div class="content-section" *ngFor="let section of sections; let i = index" [ngClass]="{ 'left-align': i % 2 === 0, 'right-align': i % 2 !== 0 }">
+  <div class="text-content">
+    <h1>{{ section.title }}</h1>
+    <ul>
+      <li *ngFor="let point of section.points">{{ point }}</li>
+    </ul>
+  </div>
+  <div class="image-content">
+    <img [src]="section.image" alt="Section image" />
+  </div>
+</div>
+
+<div *ngIf="showPrompt" class="chatbox">
+  <div class="chatbox-header">
+    <h3>Chat with Neural Assistant</h3>
+    <span class="close-button" (click)="closePrompt()">&times;</span>
+  </div>
+
+  <div class="chat-messages">
+    <div *ngFor="let msg of chatMessages" class="chat-bubble">{{ msg }}</div>
+  </div>
+
+  <div class="chat-input">
+    <input #inputField type="text" [(ngModel)]="userPrompt" placeholder="Type your message..."
+           (keydown.enter)="onPromptSubmit(userPrompt)" [disabled]="isProcessing">
+
+    <label class="attach-label" [class.disabled]="isProcessing">
+      <input type="file" (change)="handleFileInput($event)" [disabled]="isProcessing">
+      <span class="attach-icon">📎</span>
+    </label>
+
+    <button (click)="onPromptSubmit(userPrompt)" [disabled]="isProcessing">Send</button>
+  </div>
+</div>

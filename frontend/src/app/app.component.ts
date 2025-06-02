@@ -1,0 +1,124 @@
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements AfterViewInit {
+  videoPath = 'assets/neuralnet.mp4';
+  showPrompt = false;
+  userPrompt = '';
+  chatMessages: string[] = [];
+  isProcessing = false;
+  fileAttachment: File | null = null;
+
+  @ViewChild('inputField') inputField!: ElementRef;
+  @ViewChild('bgVideo') bgVideo!: ElementRef<HTMLVideoElement>;
+
+  sections = [
+    {
+      title: 'Intro to Neural Networks',
+      points: [
+        'Inspired by the human brain.',
+        'Built with layers of artificial neurons.',
+        'Each neuron receives input, processes it, and passes it on.'
+      ],
+      image: 'assets/brain.png'
+    },
+    {
+      title: 'Training Process',
+      points: [
+        'Requires large amounts of data.',
+        'Backpropagation used to update weights.',
+        'Loss functions measure prediction error.'
+      ],
+      image: 'assets/brain.png'
+    },
+    {
+      title: 'Applications of Neural Networks',
+      points: [
+        'Used in image and speech recognition.',
+        'Supports language translation and chatbots.',
+        'Enables self-driving cars and smart assistants.'
+      ],
+      image: 'assets/brain.png'
+    },
+    {
+      title: 'Challenges',
+      points: [
+        'Needs powerful GPUs or TPUs.',
+        'Can overfit small datasets.',
+        'Hard to interpret complex models.'
+      ],
+      image: 'assets/brain.png'
+    },
+    {
+      title: 'Future Potential',
+      points: [
+        'Combining with symbolic AI for better reasoning.',
+        'Deploying models on edge devices.',
+        'Evolving into more autonomous systems.'
+      ],
+      image: 'assets/brain.png'
+    }
+  ];
+
+  ngAfterViewInit() {
+    const videoEl = this.bgVideo?.nativeElement;
+    if (videoEl) {
+      videoEl.muted = true;
+      //videoEl.play().catch(() => {});
+    }
+  }
+
+  togglePrompt() {
+    this.showPrompt = !this.showPrompt;
+    setTimeout(() => this.scrollToBottom(), 0);
+  }
+
+  closePrompt() {
+    this.showPrompt = false;
+  }
+
+  scrollToBottom() {
+    const container = document.querySelector('.chat-messages');
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }
+
+  handleFileInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.fileAttachment = input.files[0];
+    }
+  }
+
+  async onPromptSubmit(promptValue: string) {
+    if ((!promptValue.trim() && !this.fileAttachment) || this.isProcessing) return;
+
+    if (promptValue.trim()) {
+      this.chatMessages.push(`🧑 You: ${promptValue}`);
+    } else if (this.fileAttachment) {
+      this.chatMessages.push(`🧑 You uploaded: ${this.fileAttachment.name}`);
+    }
+
+    this.userPrompt = '';
+    this.fileAttachment = null;
+    this.isProcessing = true;
+    this.chatMessages.push(`🤖 AI: Processing...`);
+    this.scrollToBottom();
+
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    this.chatMessages.pop();
+    this.chatMessages.push(`🤖 AI: Here is the response.`);
+    this.isProcessing = false;
+    this.scrollToBottom();
+  }
+}
