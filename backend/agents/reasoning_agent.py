@@ -1,24 +1,42 @@
-from crewai import Agent
-from crewai_tools import tool
-from transformers import pipeline
+from langchain.chat_models import ChatOpenAI
 
-@tool("generate_answer")
-class ReasoningTool:
+class ReasoningAgent:
     def __init__(self):
-        self.generator = pipeline("text-generation", model="mistralai/Mistral-7B-Instruct-v0.1", device=0)
+        self.llm = ChatOpenAI(openai_api_key="YOUR_KEY_HERE")
 
-    def run(self, context_and_query: str) -> str:
-        prompt = f"Answer the following based on the context:\n{context_and_query}"
-        result = self.generator(prompt, max_length=512, do_sample=True)
-        return result[0]['generated_text']
+    def reason(self, context_docs: list, incident_summary: str) -> dict:
+        context = "\n".join([doc.page_content for doc in context_docs])
+        prompt = f"""
+            You are a highly experienced Site Reliability Engineer (SRE) investigating a production incident.
 
-reasoning_tool = ReasoningTool()
+            ### Incident Summary:
+            {incident_summary}
 
-reasoning_agent = Agent(
-    name="ReasoningAgent",
-    role="Analyzes query and context",
-    goal="Use retrieved chunks to answer the query accurately",
-    backstory="Expert in analyzing and answering complex queries",
-    tools=[reasoning_tool],
-    verbose=True
-)
+            ### Retrieved Knowledge Base Context:
+            {context}
+
+            Based on the above information:
+
+            1. Perform a **Root Cause Analysis**
+            2. Propose a detailed, **step-by-step Resolution Plan**
+            3. Assess and report your **Confidence Score (0.0 to 1.0)** in the proposed resolution based on:
+            - Match between incident summary and context
+            - Completeness of root cause traceability
+            - Clarity of resolution steps
+
+            ### Response Format (in Markdown):
+
+            ```markdown
+            ## Root Cause
+            [Write detailed analysis of the issue, indicating affected systems, triggers, and breakdowns.]
+
+            ## Resolution Steps
+            1. [First resolution step]
+            2. [Second step, and so on...]
+
+            ## Confidence Score
+            Confidence: [0.0 to 1.0]  
+            Reasoning: [Justify the confidence score briefly]
+        """
+        response = self.llm.predict(prompt)
+        return response

@@ -1,30 +1,35 @@
-from crewai import Agent
-from crewai_tools import tool
-import faiss
 import pickle
+import faiss
+import torch
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from transformers import AutoModel, AutoTokenizer
 
-@tool("retrieve_chunks")
-class RetrievalTool:
+from backend import vector_db, embedding_model_path
+
+class RetrievalAgent:
     def __init__(self):
-        with open("data/vector_store/faiss_index.pkl", "rb") as f:
-            self.index, self.texts = pickle.load(f)
-        self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
+        with open(f"{vector_db}/chunk_texts.pkl", "rb") as f:
+            self.chunk_texts = pickle.load(f)
 
-    def run(self, query: str) -> str:
-        query_vec = self.embedder.encode([query])
-        D, I = self.index.search(query_vec, k=5)
-        return "\n\n".join([self.texts[i] for i in I[0]])
+        self.index = faiss.read_index(f"{vector_db}/faiss.index")
 
+        # === Load Embedding Tokenizer & Model (Local) ===
+        self.embed_tokenizer = AutoTokenizer.from_pretrained(embedding_model_path)
+        self.embed_model = AutoModel.from_pretrained(embedding_model_path)
 
-retrieval_tool = RetrievalTool()
+    def retrieve(self, query: str = None, top_k: int = 5):
+        inputs = self.embed_tokenizer(query, return_tensors="pt", truncation=True, padding=True)
+        with torch.no_grad():
+            output = self.embed_model(**inputs)
+        query_embedding = output.last_hidden_state.mean(dim=1).numpy()
 
-retrieval_agent = Agent(
-    name="RetrievalAgent",
-    role="Finds relevant PDF chunks",
-    goal="Retrieve relevant context for a given query",
-    backstory="Specialist in semantic search using FAISS",
-    tools=[retrieval_tool],
-    verbose=True
-)
+        # Normalize query embedding
+        query_embedding /= np.linalg.norm(query_embedding, axis=1, keepdims=True)
+
+        # Search in index
+        distances, indices = self.index.search(query_embedding, top_k)
+
+        # Get matched text chunks
+        results = [self.chunk_texts[i] for i in indices[0]]
+        return results
+    
