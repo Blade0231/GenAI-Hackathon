@@ -24,19 +24,24 @@ class ReasoningAgent:
             - Completeness of root cause traceability
             - Clarity of resolution steps
 
-            ### Response Format (in Markdown):
+            ### Response Format (JSON):
 
-            ```markdown
-            ## Root Cause
-            [Write detailed analysis of the issue, indicating affected systems, triggers, and breakdowns.]
-
-            ## Resolution Steps
-            1. [First resolution step]
-            2. [Second step, and so on...]
-
-            ## Confidence Score
-            Confidence: [0.0 to 1.0]  
-            Reasoning: [Justify the confidence score briefly]
+            ```json
+            {{
+            "root_cause": "A detailed explanation of what caused the incident, including affected components, triggers, and how the failure propagated.",
+            "resolution_steps": [
+                "Step 1: Describe the first fix or action taken.",
+                "Step 2: Add more steps as needed.",
+                "... etc."
+            ],
+            "confidence": {{
+                "score": 0.0,
+                "reasoning": "Explain why you assigned this confidence score (e.g., based on context match, prior similar incidents, ambiguity in data, etc.)."
+            }}
+            }}
+            ```
+            
+            Only return the JSON object. Do not include any explanation or markdown formatting outside of the JSON.
         """
         response = self.llm.predict(prompt)
         return response
