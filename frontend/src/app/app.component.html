@@ -39,7 +39,7 @@
     <span class="remove-attachment" (click)="fileAttachment = null">✖</span>
   </div>
 
-  <div class="chat-input">
+  <!-- <div class="chat-input">
     <input #inputField type="text" [(ngModel)]="userPrompt" placeholder="Type your message..."
       (keydown.enter)="onPromptSubmit(userPrompt)" [disabled]="isProcessing">
 
@@ -47,5 +47,14 @@
     <input type="file" id="fileUpload" style="display: none" (change)="handleFileInput($event)" />
 
     <button (click)="onPromptSubmit(userPrompt)" [disabled]="isProcessing">Send</button>
+  </div> -->
+
+  <div class="chat-input">
+    <textarea #inputArea [(ngModel)]="userPrompt" placeholder="Type your message..." rows="1"
+      (input)="autoGrow(inputArea)" (keydown)="handleKeydown($event)" [disabled]="isProcessing"></textarea>
+
+    <button (click)="onPromptSubmit(userPrompt)" [disabled]="isProcessing">
+      Send
+    </button>
   </div>
 </div>

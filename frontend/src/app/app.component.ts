@@ -19,6 +19,7 @@ export class AppComponent implements AfterViewInit {
 
   @ViewChild('inputField') inputField!: ElementRef;
   @ViewChild('bgVideo') bgVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('inputArea') inputArea!: ElementRef<HTMLTextAreaElement>;
 
   sections = [
     {
@@ -101,13 +102,18 @@ export class AppComponent implements AfterViewInit {
   }
 
   async onPromptSubmit(promptValue: string) {
+    const textarea = this.inputArea?.nativeElement;
+    if (textarea) {
+      textarea.style.height = 'auto';
+    }
+
     if ((!promptValue.trim() && !this.fileAttachment) || this.isProcessing) return;
 
     if (promptValue.trim()) {
       this.chatMessages.push(`🧑 You: ${promptValue}`);
     }
 
-    console.log(this.fileAttachment?.name,"file")
+    console.log(this.fileAttachment?.name, "file")
     if (this.fileAttachment) {
       this.chatMessages.push(`🧑 You uploaded: ${this.fileAttachment.name}`);
       console.log(this.chatMessages)
@@ -125,5 +131,17 @@ export class AppComponent implements AfterViewInit {
     this.chatMessages.push(`🤖 AI: Here is the response.`);
     this.isProcessing = false;
     this.scrollToBottom();
+  }
+
+  handleKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault(); // Prevent newline
+      this.onPromptSubmit(this.userPrompt);
+    }
+  }
+
+  autoGrow(textarea: HTMLTextAreaElement): void {
+    textarea.style.height = 'auto'; // Reset height
+    textarea.style.height = textarea.scrollHeight + 'px'; // Set to content height
   }
 }
