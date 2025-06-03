@@ -1,22 +1,46 @@
-from crewai import Agent
-from crewai_tools import tool
-from transformers import pipeline
+from langchain.chat_models import ChatOpenAI
 
-@tool("summarize_text")
-class SummarizationTool:
+class SummarizerAgent:
     def __init__(self):
-        self.summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+        self.llm = ChatOpenAI(openai_api_key="YOUR_KEY_HERE")
 
-    def run(self, text: str) -> str:
-        return self.summarizer(text, max_length=150, min_length=30, do_sample=False)[0]["summary_text"]
+    def reason(self, state):
+        prompt = f"""
+            You are a technical incident response assistant summarizing the resolution of a production incident for stakeholders.
 
-summarization_tool = SummarizationTool()
+            ### Incident Summary:
+            {state.incident_summary}
 
-summarizer_agent = Agent(
-    name="SummarizerAgent",
-    role="Summarizes documents and answers",
-    goal="Generate concise summaries of documents and outputs",
-    backstory="Efficient summarizer for LLM outputs and large text blocks",
-    tools=[summarization_tool],
-    verbose=True
-)
+            ### Context Used:
+            {state.docs}
+
+            ### Root Cause and Resolution (From Reasoning Agent):
+            {state.reasoning_result}
+
+            ### Confidence Score:
+            {state.confidence}
+
+            Please produce a **concise summary** in markdown with the following structure:
+
+            ```markdown
+            ## 📝 Incident Recap
+            [A short paragraph restating the incident in simple terms.]
+
+            ## 🧠 Root Cause Summary
+            [A 2-3 sentence summary of the root cause.]
+
+            ## 🔧 Key Resolution Steps
+            - [Step 1]
+            - [Step 2]
+            - ...
+
+            ## 📊 Confidence Score
+            {state.confidence}  
+            [Brief reason why the confidence score was high/low.]
+
+            ## ✅ Final Notes
+            [Call out any follow-up actions, human approvals, or automation triggers.]
+            Be precise, avoid fluff, and keep it under 200 words.
+        """
+        response = self.llm.predict(prompt)
+        return response
