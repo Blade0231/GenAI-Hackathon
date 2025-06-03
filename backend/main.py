@@ -4,7 +4,7 @@ from backend.agents.reasoning_agent import ReasoningAgent
 from backend.agents.confidence_check_agent import ResolutionConfidence
 from backend.agents.ansible_agent import AnsibleAutomationAgent
 from backend.agents.escalation_agent import HumanEscalationAgent
-from agents.summarizer_agent import SummarizerAgent
+from backend.agents.summarizer_agent import SummarizerAgent
 
 class IncidentState:
     def __init__(self, incident_summary):
@@ -69,6 +69,12 @@ workflow.add_edge("summarization", END)
 workflow.set_entry_point("retrieval")
 
 graph = workflow.compile()
+
+def langgraph(incident_summary: str) -> str:
+    state = IncidentState(incident_summary)
+    final_state = graph.invoke(state)
+    return final_state.final_response
+
 
 if __name__ == "__main__":
     incident_summary = "Service outage in authentication layer for component XYZ."

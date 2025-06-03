@@ -1,6 +1,6 @@
 from langchain.chat_models import ChatOpenAI
 
-class ReasoningAgent:
+class SummarizerAgent:
     def __init__(self):
         self.llm = ChatOpenAI(openai_api_key="YOUR_KEY_HERE")
 
