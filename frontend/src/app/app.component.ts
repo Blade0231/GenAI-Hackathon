@@ -94,8 +94,9 @@ export class AppComponent implements AfterViewInit {
 
   handleFileInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
+    if (input.files && input.files.length > 0) {
       this.fileAttachment = input.files[0];
+      input.value = ''; // allows reuploading same file again
     }
   }
 
@@ -104,8 +105,12 @@ export class AppComponent implements AfterViewInit {
 
     if (promptValue.trim()) {
       this.chatMessages.push(`🧑 You: ${promptValue}`);
-    } else if (this.fileAttachment) {
+    }
+
+    console.log(this.fileAttachment?.name,"file")
+    if (this.fileAttachment) {
       this.chatMessages.push(`🧑 You uploaded: ${this.fileAttachment.name}`);
+      console.log(this.chatMessages)
     }
 
     this.userPrompt = '';

@@ -5,38 +5,46 @@
   </video>
 </div>
 
-<button class="top-right" (click)="togglePrompt()">Start</button>
+<div class="launch-wrapper" style="position: fixed;z-index: 50;">
+  <button class="launch-btn" (click)="togglePrompt()">🚀 Launch Neural Assistant</button>
+</div>
 
-<div class="content-section" *ngFor="let section of sections; let i = index" [ngClass]="{ 'left-align': i % 2 === 0, 'right-align': i % 2 !== 0 }">
-  <div class="text-content">
-    <h1>{{ section.title }}</h1>
-    <ul>
-      <li *ngFor="let point of section.points">{{ point }}</li>
-    </ul>
-  </div>
-  <div class="image-content">
-    <img [src]="section.image" alt="Section image" />
+<div *ngIf="!showPrompt">
+  <div class="content-section" *ngFor="let section of sections; let i = index"
+    [ngClass]="{ 'left-align': i % 2 === 0, 'right-align': i % 2 !== 0 }">
+    <div class="text-content">
+      <h1>{{ section.title }}</h1>
+      <ul>
+        <li *ngFor="let point of section.points">{{ point }}</li>
+      </ul>
+    </div>
+    <div class="image-content">
+      <img [src]="section.image" alt="Section image" />
+    </div>
   </div>
 </div>
 
 <div *ngIf="showPrompt" class="chatbox">
   <div class="chatbox-header">
-    <h3>Chat with Neural Assistant</h3>
-    <span class="close-button" (click)="closePrompt()">&times;</span>
+    <div class="header-title">Chat with Neural Assistant</div>
+    <div class="close-button" (click)="closePrompt()">×</div>
   </div>
 
   <div class="chat-messages">
     <div *ngFor="let msg of chatMessages" class="chat-bubble">{{ msg }}</div>
   </div>
 
+  <div *ngIf="fileAttachment" class="attachment-preview">
+    <span class="attachment-name">{{ fileAttachment.name }}</span>
+    <span class="remove-attachment" (click)="fileAttachment = null">✖</span>
+  </div>
+
   <div class="chat-input">
     <input #inputField type="text" [(ngModel)]="userPrompt" placeholder="Type your message..."
-           (keydown.enter)="onPromptSubmit(userPrompt)" [disabled]="isProcessing">
+      (keydown.enter)="onPromptSubmit(userPrompt)" [disabled]="isProcessing">
 
-    <label class="attach-label" [class.disabled]="isProcessing">
-      <input type="file" (change)="handleFileInput($event)" [disabled]="isProcessing">
-      <span class="attach-icon">📎</span>
-    </label>
+    <label for="fileUpload" class="attach-label" [class.disabled]="isProcessing">📎</label>
+    <input type="file" id="fileUpload" style="display: none" (change)="handleFileInput($event)" />
 
     <button (click)="onPromptSubmit(userPrompt)" [disabled]="isProcessing">Send</button>
   </div>
