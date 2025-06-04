@@ -30,11 +30,15 @@ def summarization_node(state: WatchStatus,llm):
         ### Resolution (From Reasoning Agent):
         {state['resolution_steps']}
 
+        ### Ansible Playbook (From Automation Agent):
+        {state['pre_output']}
+
         ### Confidence Score:
         {state['confidence']}
 
         Please produce a **concise summary** in aesthetic text with the following structure (no markdown formatting, 
-        the response will be displayed in a web page using text as response to the UI API, Do not include any explanation or markdown formatting outside of the text. Don't give ``` or any type of quotes):
+        the response will be displayed in a web page using text as response to the UI API, Do not include any explanation or markdown formatting outside of the text. Don't give ``` or any type of quotes)
+        if there is an ansible playbook, include it in the summary, only if it is provided by the automation agent. Do not include any other ansible playbook or script in the summary.
 
         📝 Incident Recap
         [A short paragraph restating the incident in simple terms.]
