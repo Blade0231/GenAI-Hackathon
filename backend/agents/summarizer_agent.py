@@ -33,25 +33,25 @@ def summarization_node(state: WatchStatus,llm):
         ### Confidence Score:
         {state['confidence']}
 
-        Please produce a **concise summary** in markdown with the following structure:
+        Please produce a **concise summary** in aesthetic text with the following structure (no markdown formatting, 
+        the response will be displayed in a web page using text as response to the UI API, Do not include any explanation or markdown formatting outside of the text. Don't give ``` or any type of quotes):
 
-        ```markdown
-        ## 📝 Incident Recap
+        📝 Incident Recap
         [A short paragraph restating the incident in simple terms.]
 
-        ## 🧠 Root Cause Summary
+        🧠 Root Cause Summary
         [A 2-3 sentence summary of the root cause.]
 
-        ## 🔧 Key Resolution Steps
+        🔧 Key Resolution Steps
         - [Step 1]
         - [Step 2]
         - ...
 
-        ## 📊 Confidence Score
+        📊 Confidence Score
         {state['confidence']['score']}  
         [Brief reason why the confidence score was high/low.]
 
-        ## ✅ Final Notes
+        ✅ Final Notes
         [Call out any follow-up actions, human approvals, or automation triggers.]
         Be precise, avoid fluff, and keep it under 200 words.
     """
