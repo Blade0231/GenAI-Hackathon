@@ -60,16 +60,16 @@ TowerArchives = chroma_client.get_or_create_collection(
 # dump_article_summaries(TowerArchives,google_client)
 
 # Build the watch tower graph
-graph = build_watch_tower(llm, TowerArchives)
+TowerGraph = build_watch_tower(llm, TowerArchives)
 
-def run_watch_tower(graph, initial_state):
+def run_watch_tower(initial_state, graph=TowerGraph):
     output_state = graph.invoke(initial_state)
-    return output_state    
+    return output_state["final_response"]    
 
 if __name__ == "__main__":
     
     raw_issue = "My USB flash drive is physically damaged, and I need assistance in recovering critical files from it."
     initial_state = {"incident_raw_text":raw_issue}
 
-    output_state = run_watch_tower(graph=graph, initial_state=initial_state)
+    output_state = run_watch_tower(graph=TowerGraph, initial_state=initial_state)
     print("\nOutput:\n", output_state['final_response']) 
