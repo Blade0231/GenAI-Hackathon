@@ -6,22 +6,22 @@ GenAI Azure Hackathon 2025 Repository
 
 Built using:
 
-- 🧠 [CrewAI](https://github.com/joaomdmoura/crewAI) for agent orchestration
+- 🧠 Langgraph for agent orchestration with gpt-4o
 - ⚡ FastAPI backend (Python)
 - 💹 Angular frontend for visual insights
-- ☁️ Azure App Service deployment
+- ☁️ Azure Cloud Services
 
 ---
 
 ## 🗂 Project Structure
 
-| Folder          | Purpose                        |
-| --------------- | ------------------------------ |
-| `backend/`      | CrewAI agents, tools, and API  |
-| `frontend/`     | Angular UI                     |
-| `dataset/`      | Raw and processed trading data |
-| `notebooks/`    | EDA and prototype code         |
-| `azure-deploy/` | Docker and Azure deploy setup  |
+| Folder          | Purpose                          |
+| --------------- | -------------------------------- |
+| `backend/`      | Langgraph agents, tools, and API |
+| `frontend/`     | Angular UI                       |
+| `dataset/`      | Raw and processed trading data   |
+| `notebooks/`    | EDA and prototype code           |
+| `azure-deploy/` | Docker and Azure deploy setup    |
 
 ---
 
