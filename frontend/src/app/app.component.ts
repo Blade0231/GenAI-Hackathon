@@ -1,11 +1,12 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -69,6 +70,9 @@ export class AppComponent implements AfterViewInit {
     }
   ];
 
+
+  constructor(private http: HttpClient) { }
+
   ngAfterViewInit() {
     const videoEl = this.bgVideo?.nativeElement;
     if (videoEl) {
@@ -113,7 +117,6 @@ export class AppComponent implements AfterViewInit {
       this.chatMessages.push(`🧑 You: ${promptValue}`);
     }
 
-    console.log(this.fileAttachment?.name, "file")
     if (this.fileAttachment) {
       this.chatMessages.push(`🧑 You uploaded: ${this.fileAttachment.name}`);
       console.log(this.chatMessages)
@@ -122,15 +125,26 @@ export class AppComponent implements AfterViewInit {
     this.userPrompt = '';
     this.fileAttachment = null;
     this.isProcessing = true;
-    this.chatMessages.push(`🤖 AI: Processing...`);
-    this.scrollToBottom();
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const initial_state = { incident_raw_text: promptValue };
 
-    this.chatMessages.pop();
-    this.chatMessages.push(`🤖 AI: Here is the response.`);
+    try {
+      const response = await this.http.post<any>('https://your-api-url', initial_state).toPromise();
+
+      console.log(response);
+      let msg = response.final_response;
+
+      this.chatMessages.pop();
+      this.chatMessages.push(msg || 'No response received');
+    } catch (error) {
+      this.chatMessages.pop();
+      this.chatMessages.push('Something went wrong. Please try again.');
+      console.error(error);
+    }
+
     this.isProcessing = false;
     this.scrollToBottom();
+
   }
 
   handleKeydown(event: KeyboardEvent): void {
