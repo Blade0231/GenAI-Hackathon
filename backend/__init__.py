@@ -1,4 +1,10 @@
-embedding_model_path = "models/embedding/all-MiniLM-L6-v2"
-llm_model_path = "models/tinyllama"
-text_file = 'data/qa.txt'
-vector_db = "data/faiss_index"
+import dotenv
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+dotenv.load_dotenv()
+
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+DB_NAME = os.getenv("DB_NAME")
