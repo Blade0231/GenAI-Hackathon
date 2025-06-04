@@ -1,9 +1,6 @@
 from backend.WatchStatus import WatchStatus
 
 def retrieve_knowledge_node(state: WatchStatus, KnowledgeKeep):
-    # retriever = RetrievalAgent()
-    # state.knowledge = retriever.retrieve(state.incident_summary)
-    # return state
     query = f'''
     The articles as closer as possible which mention how to fix issues similar to this 
     issue short description: {state['incident_short_description']} 

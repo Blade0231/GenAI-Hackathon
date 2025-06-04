@@ -2,9 +2,6 @@ from backend.WatchStatus import WatchStatus
 import json
 
 def reasoning_node(state: WatchStatus, llm):
-    # reasoner = ReasoningAgent()
-    # state.reasoning_result = reasoner.reason(state.knowledge, state.incident_summary)
-    # return state
     prompt = f"""
             You are a highly experienced Site Reliability Engineer (SRE) investigating a production incident.
 
