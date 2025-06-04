@@ -5,10 +5,11 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http'; // ✅ Only HttpClientModule here
+import { LinebreaksPipe } from './pipes/linebreaks.pipe';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,LinebreaksPipe
   ],
   imports: [
     BrowserModule,

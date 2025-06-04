@@ -31,7 +31,7 @@
   </div>
 
   <div class="chat-messages">
-    <div *ngFor="let msg of chatMessages" class="chat-bubble">{{ msg }}</div>
+    <div *ngFor="let msg of chatMessages" class="chat-bubble" [innerHTML]="msg | linebreaks"></div>
   </div>
 
   <div *ngIf="fileAttachment" class="attachment-preview">

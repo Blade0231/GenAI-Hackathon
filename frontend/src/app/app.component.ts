@@ -2,11 +2,12 @@ import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { LinebreaksPipe } from './pipes/linebreaks.pipe';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, LinebreaksPipe],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -131,7 +132,6 @@ export class AppComponent implements AfterViewInit {
     try {
       this.chatMessages.push(`🤖 AI: Processing...`);
       const response = await this.http.post<any>('https://your-api-url', initial_state).toPromise();
-
       console.log(response);
       // let msg = response.final_response;
 
