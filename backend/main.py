@@ -3,11 +3,9 @@ from backend.WatchTower import build_watch_tower
 from backend import DB_NAME
 import chromadb
 from chromadb.config import Settings
-from google import genai
-from backend import GOOGLE_API_KEY
 from chromadb import Documents, EmbeddingFunction, Embeddings
-from backend import GOOGLE_API_KEY
 from google import genai
+from backend import GOOGLE_API_KEY
 from google.genai import types
 from google.api_core import retry
 
