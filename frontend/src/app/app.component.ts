@@ -25,51 +25,34 @@ export class AppComponent implements AfterViewInit {
 
   sections = [
     {
-      title: 'Intro to Neural Networks',
+      title: 'Multi-Agent AI System for Smarter Incident Recovery',
+      points: [],
+      image: 'assets/brain.png'
+    },
+    {
+      title: 'Problem',
       points: [
-        'Inspired by the human brain.',
-        'Built with layers of artificial neurons.',
-        'Each neuron receives input, processes it, and passes it on.'
+        'Barclays relies on 1,500+ L1 support staff for manually monitoring services daily, where the vendors manually monitor service events, resolve incidents using SOPs and Knowledge Article searches and application health checks as a part of their daily SOD and have to implement resolution steps to maintain service stability',
+        'This manual approach is resource-intensive, time-consuming, and susceptible to human error.'
       ],
       image: 'assets/brain.png'
     },
     {
-      title: 'Training Process',
+      title: 'Solution & Tech Stack',
       points: [
-        'Requires large amounts of data.',
-        'Backpropagation used to update weights.',
-        'Loss functions measure prediction error.'
+        'AI assistant automates event detection, knowledge lookup, and resolution steps.',
+        'Built with GPT-4o and LangGraph for intelligent orchestration.',
+        'Powered by FastAPI backend, Angular frontend, and Azure Cloud deployment.'
       ],
       image: 'assets/brain.png'
     },
     {
-      title: 'Applications of Neural Networks',
-      points: [
-        'Used in image and speech recognition.',
-        'Supports language translation and chatbots.',
-        'Enables self-driving cars and smart assistants.'
-      ],
-      image: 'assets/brain.png'
-    },
-    {
-      title: 'Challenges',
-      points: [
-        'Needs powerful GPUs or TPUs.',
-        'Can overfit small datasets.',
-        'Hard to interpret complex models.'
-      ],
-      image: 'assets/brain.png'
-    },
-    {
-      title: 'Future Potential',
-      points: [
-        'Combining with symbolic AI for better reasoning.',
-        'Deploying models on edge devices.',
-        'Evolving into more autonomous systems.'
-      ],
-      image: 'assets/brain.png'
+      title: 'Architecture',
+      points: [],
+      image: 'assets/Langgraph-Workflow.png'
     }
   ];
+
 
 
   constructor(private http: HttpClient) { }
@@ -131,7 +114,7 @@ export class AppComponent implements AfterViewInit {
 
     try {
       this.chatMessages.push(`🤖 AI: Processing...`);
-      const response = await this.http.post<any>('http://127.0.0.1:8000/execute', initial_state).toPromise();
+      const response = await this.http.post<any>('http://74.224.102.204:5000/execute',initial_state).toPromise();
 
       console.log(response);
       // let msg = response.final_response;

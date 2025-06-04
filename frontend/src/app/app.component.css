@@ -134,6 +134,31 @@ video {
   transition: transform 0.3s ease;
 }
 
+.arch-content {
+  flex: 1 1 100%;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* align items to the top */
+  align-items: center;
+  text-align: center;
+  padding-top: 20px; /* optional for breathing room */
+}
+
+.arch-content h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #a0e9ff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.arch-content img {
+  max-width: 800px;
+  width: 100%;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+}
+
 .image-content img:hover {
   transform: scale(1.05);
 }

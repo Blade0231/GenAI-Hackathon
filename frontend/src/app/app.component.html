@@ -11,14 +11,20 @@
 
 <div *ngIf="!showPrompt">
   <div class="content-section" *ngFor="let section of sections; let i = index"
-    [ngClass]="{ 'left-align': i % 2 === 0, 'right-align': i % 2 !== 0 }">
-    <div class="text-content">
-      <h1>{{ section.title }}</h1>
+    [ngClass]="{ 'left-align': i % 2 === 0 && i!=3, 'right-align': i % 2 !== 0 && i!= 3 }">
+    <div *ngIf="i!=3" class="text-content">
+      <h1 *ngIf="i==0" style="font-size: 4rem;">WatchTower</h1>
+      <h1 *ngIf="i==0" style="font-size: 2rem;">{{ section.title }}</h1>
+      <h1 *ngIf="i!=0 && i!=3">{{ section.title }}</h1>
       <ul>
         <li *ngFor="let point of section.points">{{ point }}</li>
       </ul>
     </div>
-    <div class="image-content">
+    <div *ngIf="i!=3" class="image-content">
+      <img [src]="section.image" alt="Section image" />
+    </div>
+    <div *ngIf="i==3" class="arch-content">
+      <h1 *ngIf="i==3" style="font-size: 2rem;">Architecture</h1>
       <img [src]="section.image" alt="Section image" />
     </div>
   </div>
@@ -26,7 +32,7 @@
 
 <div *ngIf="showPrompt" class="chatbox">
   <div class="chatbox-header">
-    <div class="header-title">Chat with Neural Assistant</div>
+    <div class="header-title">Chat with WatchTower</div>
     <div class="close-button" (click)="closePrompt()">×</div>
   </div>
 
