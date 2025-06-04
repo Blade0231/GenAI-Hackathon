@@ -176,3 +176,6 @@ cython_debug/
 #frontend
 frontend/node_modules/
 frontend/.angular/
+.DS_Store
+data/
+chroma_db/

@@ -1,19 +1,26 @@
-from langchain.chat_models import ChatOpenAI
+from backend.WatchStatus import WatchStatus
+import json
 
-class ReasoningAgent:
-    def __init__(self):
-        self.llm = ChatOpenAI(openai_api_key="YOUR_KEY_HERE")
-
-    def reason(self, context_docs: list, incident_summary: str) -> dict:
-        context = "\n".join([doc.page_content for doc in context_docs])
-        prompt = f"""
+def reasoning_node(state: WatchStatus, llm):
+    # reasoner = ReasoningAgent()
+    # state.reasoning_result = reasoner.reason(state.knowledge, state.incident_summary)
+    # return state
+    prompt = f"""
             You are a highly experienced Site Reliability Engineer (SRE) investigating a production incident.
 
             ### Incident Summary:
-            {incident_summary}
+
+            Opened Date:
+            {state['incident_opened_date']}
+
+            Short Description:
+            {state['incident_short_description']}
+
+            Description:
+            {state['incident_description']}
 
             ### Retrieved Knowledge Base Context:
-            {context}
+            {state['knowledge']}
 
             Based on the above information:
 
@@ -43,5 +50,7 @@ class ReasoningAgent:
             
             Only return the JSON object. Do not include any explanation or markdown formatting outside of the JSON.
         """
-        response = self.llm.predict(prompt)
-        return response
+    TowerMind = llm.send_message(prompt)
+    cleaned = TowerMind.text.strip().replace("```json", "").replace("```", "").strip()
+    parsed = json.loads(cleaned)
+    return {"reasoning_result": TowerMind.text,"root_cause":parsed["root_cause"],"resolution_steps":parsed["resolution_steps"],"confidence":parsed["confidence"]}

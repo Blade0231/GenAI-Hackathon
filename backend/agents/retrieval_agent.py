@@ -1,35 +1,17 @@
-import pickle
-import faiss
-import torch
-import numpy as np
-from transformers import AutoModel, AutoTokenizer
+from backend.WatchStatus import WatchStatus
 
-from backend import vector_db, embedding_model_path
+def retrieve_knowledge_node(state: WatchStatus, KnowledgeKeep):
+    # retriever = RetrievalAgent()
+    # state.knowledge = retriever.retrieve(state.incident_summary)
+    # return state
+    query = f'''
+    The articles as closer as possible which mention how to fix issues similar to this 
+    issue short description: {state['incident_short_description']} 
+    and this 
+    issue description {state['incident_description']}, 
+    and as recent as possible to the date {state['incident_opened_date']}'''
 
-class RetrievalAgent:
-    def __init__(self):
-        with open(f"{vector_db}/chunk_texts.pkl", "rb") as f:
-            self.chunk_texts = pickle.load(f)
-
-        self.index = faiss.read_index(f"{vector_db}/faiss.index")
-
-        # === Load Embedding Tokenizer & Model (Local) ===
-        self.embed_tokenizer = AutoTokenizer.from_pretrained(embedding_model_path)
-        self.embed_model = AutoModel.from_pretrained(embedding_model_path)
-
-    def retrieve(self, query: str = None, top_k: int = 5):
-        inputs = self.embed_tokenizer(query, return_tensors="pt", truncation=True, padding=True)
-        with torch.no_grad():
-            output = self.embed_model(**inputs)
-        query_embedding = output.last_hidden_state.mean(dim=1).numpy()
-
-        # Normalize query embedding
-        query_embedding /= np.linalg.norm(query_embedding, axis=1, keepdims=True)
-
-        # Search in index
-        distances, indices = self.index.search(query_embedding, top_k)
-
-        # Get matched text chunks
-        results = [self.chunk_texts[i] for i in indices[0]]
-        return results
-    
+    TowerBrief = KnowledgeKeep.query(query_texts=[query], n_results=10)
+    [all_docs] = TowerBrief["documents"]
+    q_text = "\n".join(doc for doc in all_docs)
+    return {"knowledge": q_text}
