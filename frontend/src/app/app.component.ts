@@ -129,13 +129,14 @@ export class AppComponent implements AfterViewInit {
     const initial_state = { incident_raw_text: promptValue };
 
     try {
+      this.chatMessages.push(`🤖 AI: Processing...`);
       const response = await this.http.post<any>('https://your-api-url', initial_state).toPromise();
 
       console.log(response);
-      //let msg = response.final_response;
+      // let msg = response.final_response;
 
       this.chatMessages.pop();
-      this.chatMessages.push(response || 'No response received');
+      this.chatMessages.push('🤖 AI: ' + response || 'No response received');
     } catch (error) {
       this.chatMessages.pop();
       this.chatMessages.push('Something went wrong. Please try again.');
