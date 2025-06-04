@@ -20,7 +20,8 @@ def parse_raw_incident(state: WatchStatus, llm) -> WatchStatus:
     """
     response = llm.send_message(incident_extraction_prompt)
 
-    InputMason = response.text.strip().replace("```json", "").replace("```", "").strip()
+    # InputMason = response.text.strip().replace("```json", "").replace("```", "").strip()
+    InputMason = response.strip().replace("```json", "").replace("```", "").strip()
     parsed = json.loads(InputMason)
 
     return {"incident_opened_date": parsed["incident_opened_date"], "incident_short_description": parsed["incident_short_description"], "incident_description": parsed["incident_description"]}

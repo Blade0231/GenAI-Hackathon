@@ -55,4 +55,5 @@ def summarization_node(state: WatchStatus,llm):
         Be precise, avoid fluff, and keep it under 200 words.
     """
     WatchNarrator = llm.send_message(prompt)
-    return {"final_response": WatchNarrator.text}
+    # return {"final_response": WatchNarrator.text}
+    return {"final_response": WatchNarrator}
