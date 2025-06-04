@@ -16,4 +16,5 @@ def automation_node(state: WatchStatus,llm):
 
     """
     TowerForge = llm.send_message(prompt)
-    return {"pre_output": TowerForge.text}
+    # return {"pre_output": TowerForge.text}
+    return {"pre_output": TowerForge}

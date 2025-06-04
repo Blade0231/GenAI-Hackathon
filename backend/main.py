@@ -1,54 +1,63 @@
 from backend.utils import dump_article_summaries
 from backend.WatchTower import build_watch_tower
-from backend import DB_NAME
+from backend import DB_NAME, AZURE_OPENAI_ENDPOINT, OPENAI_API_VERSION, OPENAI_API_KEY
 import chromadb
 from chromadb.config import Settings
-from google import genai
-from backend import GOOGLE_API_KEY
 from chromadb import Documents, EmbeddingFunction, Embeddings
-from backend import GOOGLE_API_KEY
-from google import genai
-from google.genai import types
-from google.api_core import retry
+from openai import AzureOpenAI
 
-is_retriable = lambda e: (isinstance(e, genai.errors.APIError) and e.code in {429, 503})
+# client is the azure client
+openai_client = AzureOpenAI(
+    azure_endpoint= AZURE_OPENAI_ENDPOINT,
+    api_key=OPENAI_API_KEY,
+    api_version=OPENAI_API_VERSION,
+)
 
-class GeminiEmbeddingFunction(EmbeddingFunction):
-    # Specify whether to generate embeddings for documents, or queries
-    document_mode = True
-
-    @retry.Retry(predicate=is_retriable)
-    def __call__(self, input: Documents) -> Embeddings:
-        if self.document_mode:
-            embedding_task = "retrieval_document"
-        else:
-            embedding_task = "retrieval_query"
-
-        response = google_client.models.embed_content(
-            model="models/text-embedding-004",
-            contents=input,
-            config=types.EmbedContentConfig(
-                task_type=embedding_task,
-            ),
-        )
-        return [e.values for e in response.embeddings]
+class ChatLLM:
+    def __init__(self, client, deployment_name, system_prompt="You are a helpful assistant."):
+        self.client = client
+        self.deploymet_name = deployment_name
+        self.messages = [{"role": "system", "content": system_prompt}]
     
-# client is the gemini client
-google_client = genai.Client(api_key=GOOGLE_API_KEY)
+    def send_message(self, user_input: str) -> str:
+        self.messages.append({"role": "user", "content": user_input})
 
-# llm is the gemini model
-llm = google_client.chats.create(model="gemini-2.0-flash-001")
+        response = self.client.chat.completions.create(
+            model=self.deploymet_name,
+            messages=self.messages
+        )
 
+        assistant_reply = response.choices[0].message.content
+        self.messages.append({"role": "assistant", "content": assistant_reply})
+        return assistant_reply
+
+    def reset(self, system_prompt: str = None):
+        self.messages = []
+        if system_prompt:
+            self.messages.append({"role": "system", "content": system_prompt})
+
+# llm is the openAI model
+llm = ChatLLM(openai_client, deployment_name="gpt-4o-7")
+
+class AzureEmbeddingFunction(EmbeddingFunction):
+    def __init__(self, client: AzureOpenAI):
+        self.client = client
+        self.document_mode = True
+
+    def __call__(self, input: Documents) -> Embeddings:
+        response = self.client.embeddings.create(
+            model="text-embedding-ada-002",
+            input=input
+        )
+        return [record.embedding for record in response.data]
+    
 chroma_client = chromadb.Client(Settings(
     is_persistent=True,
     persist_directory="./chroma_db",
     anonymized_telemetry=False
 ))
 
-# embed_fn is the gemini embedding function
-embed_fn = GeminiEmbeddingFunction(google_client)
-
-# set the document mode to true
+embed_fn = AzureEmbeddingFunction(openai_client)
 embed_fn.document_mode = True
 
 # TowerArchives is the croma db
@@ -57,7 +66,7 @@ TowerArchives = chroma_client.get_or_create_collection(
 )
 
 # Dump the article summaries to the database
-# dump_article_summaries(TowerArchives,google_client)
+# dump_article_summaries(TowerArchives,llm)
 
 # Build the watch tower graph
 TowerGraph = build_watch_tower(llm, TowerArchives)

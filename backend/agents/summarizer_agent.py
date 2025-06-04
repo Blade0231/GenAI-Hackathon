@@ -47,8 +47,7 @@ def summarization_node(state: WatchStatus,llm):
         - [Step 2]
         - ...
 
-        📊 Confidence Score
-        {state['confidence']['score']}  
+        📊 Confidence Score:{state['confidence']['score']}  
         [Brief reason why the confidence score was high/low.]
 
         ✅ Final Notes
@@ -56,4 +55,5 @@ def summarization_node(state: WatchStatus,llm):
         Be precise, avoid fluff, and keep it under 200 words.
     """
     WatchNarrator = llm.send_message(prompt)
-    return {"final_response": WatchNarrator.text}
+    # return {"final_response": WatchNarrator.text}
+    return {"final_response": WatchNarrator}

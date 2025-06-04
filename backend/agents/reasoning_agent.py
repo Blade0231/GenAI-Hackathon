@@ -2,9 +2,6 @@ from backend.WatchStatus import WatchStatus
 import json
 
 def reasoning_node(state: WatchStatus, llm):
-    # reasoner = ReasoningAgent()
-    # state.reasoning_result = reasoner.reason(state.knowledge, state.incident_summary)
-    # return state
     prompt = f"""
             You are a highly experienced Site Reliability Engineer (SRE) investigating a production incident.
 
@@ -51,6 +48,8 @@ def reasoning_node(state: WatchStatus, llm):
             Only return the JSON object. Do not include any explanation or markdown formatting outside of the JSON.
         """
     TowerMind = llm.send_message(prompt)
-    cleaned = TowerMind.text.strip().replace("```json", "").replace("```", "").strip()
+    # cleaned = TowerMind.text.strip().replace("```json", "").replace("```", "").strip()
+    cleaned = TowerMind.strip().replace("```json", "").replace("```", "").strip()
     parsed = json.loads(cleaned)
-    return {"reasoning_result": TowerMind.text,"root_cause":parsed["root_cause"],"resolution_steps":parsed["resolution_steps"],"confidence":parsed["confidence"]}
+    # return {"reasoning_result": TowerMind.text,"root_cause":parsed["root_cause"],"resolution_steps":parsed["resolution_steps"],"confidence":parsed["confidence"]}
+    return {"reasoning_result": TowerMind,"root_cause":parsed["root_cause"],"resolution_steps":parsed["resolution_steps"],"confidence":parsed["confidence"]}

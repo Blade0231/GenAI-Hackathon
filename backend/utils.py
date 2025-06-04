@@ -101,17 +101,26 @@ def get_article_cleaning_prompt(text_clean) -> str:
 
     return prompt
 
-def get_article_summary(client, raw_text: str, max_length: int = 1000000):
+# def get_article_summary(client, raw_text: str, max_length: int = 1000000):
+#     print('🔍 Cleaning HTML and generating summarization prompt...')
+#     text_cleaned = html_to_clean_text(raw_text, max_length)
+#     prompt = get_article_cleaning_prompt(text_cleaned)
+
+#     print('🤖 Getting model response...')
+#     response = client.models.generate_content(
+#         model="gemini-2.0-flash-001", contents=prompt
+#     )
+#     model_output = response.text.strip()
+#     return model_output
+
+def get_article_summary(llm, raw_text: str, max_length: int = 1000000):
     print('🔍 Cleaning HTML and generating summarization prompt...')
     text_cleaned = html_to_clean_text(raw_text, max_length)
     prompt = get_article_cleaning_prompt(text_cleaned)
 
     print('🤖 Getting model response...')
-    response = client.models.generate_content(
-        model="gemini-2.0-flash-001", contents=prompt
-    )
-    model_output = response.text.strip()
-    return model_output
+    summary = llm.send_message(prompt)
+    return summary
 
 def get_article_summary_with_retry(client, raw_text, max_length=1000000):
     try:
@@ -146,7 +155,7 @@ def dump_article_summaries(TowerArchives, client):
     summaries = []
 
     if TowerArchives.count() < 30:
-        # Loop through each filing folder
+        # Loop through each Knowledge Article
         for index, row in kb_df.iterrows():
             print(f"Processing: {row['KB Title']}")
             
