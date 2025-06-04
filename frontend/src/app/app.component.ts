@@ -25,15 +25,16 @@ export class AppComponent implements AfterViewInit {
 
   sections = [
     {
-      title: 'Multi-Agent AI System for Smarter Incident Recovery',
+      title: 'Multi-Agent AI System for Smart Incident Recovery',
       points: [],
       image: 'assets/brain.png'
     },
     {
-      title: 'Problem',
+      title: 'Problem Statement',
       points: [
-        'Barclays relies on 1,500+ L1 support staff for manually monitoring services daily, where the vendors manually monitor service events, resolve incidents using SOPs and Knowledge Article searches and application health checks as a part of their daily SOD and have to implement resolution steps to maintain service stability',
-        'This manual approach is resource-intensive, time-consuming, and susceptible to human error.'
+        'Empowering IT support with Gen AI based Multi-Agent Bot for faster issue resolution and Smart Task Automation',
+        'Barclays manages over 3500 service offerings, each essential to daily customer and client operations.',
+        'In 2025, on an avg 11,000/week Standard incidents are generated as of today, which includes System as well as User generated Incidents causing service discruption leading to customer impact.'
       ],
       image: 'assets/brain.png'
     },
@@ -49,7 +50,7 @@ export class AppComponent implements AfterViewInit {
     {
       title: 'Architecture',
       points: [],
-      image: 'assets/Langgraph-Workflow.png'
+      image: 'assets/WatchTower.drawio.png'
     }
   ];
 
