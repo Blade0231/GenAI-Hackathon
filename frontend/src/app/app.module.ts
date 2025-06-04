@@ -4,15 +4,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http'; // ✅ Only HttpClientModule here
+import { LinebreaksPipe } from './pipes/linebreaks.pipe';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,LinebreaksPipe
   ],
   imports: [
     BrowserModule,
-    CommonModule, // For *ngIf, *ngFor, [ngClass]
-    FormsModule   // For [(ngModel)]
+    CommonModule,
+    FormsModule,
+    HttpClientModule // ✅ This is enough to provide HttpClient
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,22 +1,59 @@
-from crewai import Agent
-from crewai_tools import tool
-from transformers import pipeline
+from backend.WatchStatus import WatchStatus
 
-@tool("summarize_text")
-class SummarizationTool:
-    def __init__(self):
-        self.summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+def summarization_node(state: WatchStatus,llm):
+    prompt = f"""
+        You are a technical incident response assistant summarizing the resolution of a production incident for stakeholders.
 
-    def run(self, text: str) -> str:
-        return self.summarizer(text, max_length=150, min_length=30, do_sample=False)[0]["summary_text"]
+        ### Incident Short Description:
+        {state['incident_short_description']}
 
-summarization_tool = SummarizationTool()
+        ### Incident Description:
+        {state['incident_description']}
+        
+        ### Incident Summary:
 
-summarizer_agent = Agent(
-    name="SummarizerAgent",
-    role="Summarizes documents and answers",
-    goal="Generate concise summaries of documents and outputs",
-    backstory="Efficient summarizer for LLM outputs and large text blocks",
-    tools=[summarization_tool],
-    verbose=True
-)
+        Opened Date:
+        {state['incident_opened_date']}
+
+        Short Description:
+        {state['incident_short_description']}
+
+        Description:
+        {state['incident_description']}
+
+        ### Context Used:
+        {state['knowledge']}
+
+        ### Root Cause (From Reasoning Agent):
+        {state['root_cause']}
+
+        ### Resolution (From Reasoning Agent):
+        {state['resolution_steps']}
+
+        ### Confidence Score:
+        {state['confidence']}
+
+        Please produce a **concise summary** in aesthetic text with the following structure (no markdown formatting, 
+        the response will be displayed in a web page using text as response to the UI API, Do not include any explanation or markdown formatting outside of the text. Don't give ``` or any type of quotes):
+
+        📝 Incident Recap
+        [A short paragraph restating the incident in simple terms.]
+
+        🧠 Root Cause Summary
+        [A 2-3 sentence summary of the root cause.]
+
+        🔧 Key Resolution Steps
+        - [Step 1]
+        - [Step 2]
+        - ...
+
+        📊 Confidence Score
+        {state['confidence']['score']}  
+        [Brief reason why the confidence score was high/low.]
+
+        ✅ Final Notes
+        [Call out any follow-up actions, human approvals, or automation triggers.]
+        Be precise, avoid fluff, and keep it under 200 words.
+    """
+    WatchNarrator = llm.send_message(prompt)
+    return {"final_response": WatchNarrator.text}

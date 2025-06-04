@@ -1,30 +1,17 @@
-from crewai import Agent
-from crewai_tools import tool
-import faiss
-import pickle
-import numpy as np
-from sentence_transformers import SentenceTransformer
+from backend.WatchStatus import WatchStatus
 
-@tool("retrieve_chunks")
-class RetrievalTool:
-    def __init__(self):
-        with open("data/vector_store/faiss_index.pkl", "rb") as f:
-            self.index, self.texts = pickle.load(f)
-        self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
+def retrieve_knowledge_node(state: WatchStatus, KnowledgeKeep):
+    # retriever = RetrievalAgent()
+    # state.knowledge = retriever.retrieve(state.incident_summary)
+    # return state
+    query = f'''
+    The articles as closer as possible which mention how to fix issues similar to this 
+    issue short description: {state['incident_short_description']} 
+    and this 
+    issue description {state['incident_description']}, 
+    and as recent as possible to the date {state['incident_opened_date']}'''
 
-    def run(self, query: str) -> str:
-        query_vec = self.embedder.encode([query])
-        D, I = self.index.search(query_vec, k=5)
-        return "\n\n".join([self.texts[i] for i in I[0]])
-
-
-retrieval_tool = RetrievalTool()
-
-retrieval_agent = Agent(
-    name="RetrievalAgent",
-    role="Finds relevant PDF chunks",
-    goal="Retrieve relevant context for a given query",
-    backstory="Specialist in semantic search using FAISS",
-    tools=[retrieval_tool],
-    verbose=True
-)
+    TowerBrief = KnowledgeKeep.query(query_texts=[query], n_results=10)
+    [all_docs] = TowerBrief["documents"]
+    q_text = "\n".join(doc for doc in all_docs)
+    return {"knowledge": q_text}
