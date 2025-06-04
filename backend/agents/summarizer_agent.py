@@ -47,8 +47,7 @@ def summarization_node(state: WatchStatus,llm):
         - [Step 2]
         - ...
 
-        📊 Confidence Score
-        {state['confidence']['score']}  
+        📊 Confidence Score:{state['confidence']['score']}  
         [Brief reason why the confidence score was high/low.]
 
         ✅ Final Notes
