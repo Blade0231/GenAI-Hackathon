@@ -40,7 +40,6 @@ class ChatLLM:
 llm = ChatLLM(openai_client, deployment_name="gpt-4o-7")
 
 class AzureEmbeddingFunction(EmbeddingFunction):
-    document_mode = True
     def __init__(self, client: AzureOpenAI):
         self.client = client
         self.document_mode = True
