@@ -76,9 +76,9 @@ def run_watch_tower(initial_state, graph=TowerGraph):
     return output_state["final_response"]    
 
 if __name__ == "__main__":
-    
-    raw_issue = "My USB flash drive is physically damaged, and I need assistance in recovering critical files from it."
-    initial_state = {"incident_raw_text":raw_issue}
+    dump_article_summaries(TowerArchives,llm)
+    # raw_issue = "My USB flash drive is physically damaged, and I need assistance in recovering critical files from it."
+    # initial_state = {"incident_raw_text":raw_issue}
 
-    output_state = run_watch_tower(graph=TowerGraph, initial_state=initial_state)
-    print("\nOutput:\n", output_state['final_response']) 
+    # output_state = run_watch_tower(graph=TowerGraph, initial_state=initial_state)
+    # print("\nOutput:\n", output_state['final_response']) 

@@ -150,7 +150,7 @@ def get_article_summary_with_retry(client, raw_text, max_length=1000000):
 
 def dump_article_summaries(TowerArchives, client):
     kb_df = pd.read_excel("data/raw/MOCKDATA.xlsx")
-    kb_df = kb_df[['KB Number','KB Title', 'KB Steps']]
+    kb_df = kb_df[['KB Number','KB Title', 'KB Steps', 'Ansible Automatable', 'Category']]
 
     summaries = []
 
@@ -160,7 +160,7 @@ def dump_article_summaries(TowerArchives, client):
             print(f"Processing: {row['KB Title']}")
             
             try:
-                summary_text = get_article_summary_with_retry(client, raw_text=f"Title: {row['KB Title']} \nResolutionSteps:\n{row['KB Steps']}")
+                summary_text = get_article_summary_with_retry(client, raw_text=f"Title: {row['KB Title']} \nResolutionSteps:\n{row['KB Steps']} \nAnsible Automatable: {row['Ansible Automatable']} \nCategory: {row['Category']}")
                 
                 if summary_text:
                     summaries.append({
