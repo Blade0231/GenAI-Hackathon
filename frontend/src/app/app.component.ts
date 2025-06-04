@@ -131,7 +131,8 @@ export class AppComponent implements AfterViewInit {
 
     try {
       this.chatMessages.push(`🤖 AI: Processing...`);
-      const response = await this.http.post<any>('https://your-api-url', initial_state).toPromise();
+      const response = await this.http.post<any>('http://127.0.0.1:8000/execute', initial_state).toPromise();
+
       console.log(response);
       // let msg = response.final_response;
 

@@ -1,7 +1,4 @@
-class HumanEscalationAgent:
-    def escalate(self, reasoning_text: str) -> str:
-        # Build a Mail or Teams Message
-        # We can get email DL from Incident Contact Field from Input Dataset
-        return f"Escalated to human operator. Reasoning: {reasoning_text}"
-    
-    
+from backend.WatchStatus import WatchStatus
+def escalation_node(state: WatchStatus):
+    EscalationWarden = f"Escalated to human operator. Reasoning: {state['reasoning_result']}"
+    return {"pre_output":EscalationWarden}
